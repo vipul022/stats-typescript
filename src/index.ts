@@ -1,11 +1,14 @@
 import {CsvFileReader} from "./CsvFileReader"
-
-import {MatchResult} from './MatchResult'
 import {MatchReader} from "./MatchReader"
+import {Summary} from "./Summary"
+import { WinsAnalysis} from "./analyzers/WinsAnalysis"
+import {ConsoleReports} from "./reportTargets/ConsoleReports"
+import {HtmlReport} from "./reportTargets/HtmlReport"
 
-// ! resorces: https://nodejs.org/api/fs.html#fs_fs_readfilesync_path_options
 
-// const reader = new MatchReader('football.csv')
+
+
+
 
 // !create an object that satisfies the 'DataReader interface
 const csvFileReader = new CsvFileReader('football.csv')
@@ -16,20 +19,13 @@ const csvFileReader = new CsvFileReader('football.csv')
 const matchReader = new MatchReader(csvFileReader)
 
 matchReader.load()
-console.log(matchReader.matches)
 
+// ! create instances of WinsAnalysis and ConsoleReports/HtmlReport and pass them to Summary and call summary.buildAndPrintReport to generate report
+const winsAnalysis = new WinsAnalysis('Man United')
 
+const consoleReports = new ConsoleReports()
+const htmlReports = new HtmlReport
+const summary = new Summary(winsAnalysis, consoleReports)
 
-// !generate report of all the wins of Manchester United
+summary.buildAndPrintReport(matchReader.matches)
 
-let manUnitedWins = 0;
-
-for (let match of matchReader.matches) {
-  if(match[1] === 'Man United' && match[5] === MatchResult.HomeWin) {
-    manUnitedWins++;
-  }else if(match[2] === 'Man United' && match[5] === MatchResult.AwayWin){
-    manUnitedWins++;
-  }
-}
-
-console.log(`Manchecter United has won ${manUnitedWins} matches`)
